@@ -1,0 +1,401 @@
+-- Create the parent tables first
+
+-- Department Table
+CREATE TABLE Department (
+  Id INT PRIMARY KEY,
+  DepartmentName VARCHAR(50)
+);
+
+-- Job Title Table
+CREATE TABLE JobTitle (
+  Id INT PRIMARY KEY,
+  JobTitleName VARCHAR(50)
+);
+
+-- Country Table
+CREATE TABLE Country (
+  Id INT PRIMARY KEY,
+  CountryName VARCHAR(50)
+);
+
+-- Manager Table
+CREATE TABLE Manager (
+  Id INT PRIMARY KEY,
+  ManagerName VARCHAR(50)
+);
+
+-- Project Table
+CREATE TABLE Project (
+  Id INT PRIMARY KEY,
+  ProjectName VARCHAR(50)
+);
+
+-- Create the employees table with foreign keys
+
+CREATE TABLE Employees (
+  Id INT PRIMARY KEY,
+  EmployeeName VARCHAR(100),
+  DepartmentId INT,
+  JobId INT,
+  CountryId INT,
+  ManagerId INT,
+  ProjectId INT,
+  
+  -- Foreign key constraints
+  CONSTRAINT fk_department FOREIGN KEY (DepartmentId) REFERENCES Department ,
+  CONSTRAINT fk_job_title FOREIGN KEY (JobId) REFERENCES JobTitle,
+  CONSTRAINT fk_country FOREIGN KEY (CountryId) REFERENCES Country,
+  CONSTRAINT fk_manager FOREIGN KEY (ManagerId) REFERENCES Manager,
+  CONSTRAINT fk_project FOREIGN KEY (ProjectId) REFERENCES Project
+);
+
+-- Insert records into the department table
+INSERT INTO department (id, departmentname)
+VALUES
+  (1, 'HR'),
+  (2, 'Finance'),
+  (3, 'Engineering'),
+  (4, 'Marketing');
+  -- Add more department records as needed
+
+-- Insert records into the job_title table
+INSERT INTO jobtitle (id, jobtitlename)
+VALUES
+  (1, 'Manager'),
+  (2, 'Software Engineer'),
+  (3, 'Accountant'),
+  (4, 'Marketing Specialist');
+  -- Add more job_title records as needed
+
+-- Insert records into the country table
+INSERT INTO country (id, countryname)
+VALUES
+  (1, 'USA'),
+  (2, 'Canada'),
+  (3, 'Germany'),
+  (4, 'France');
+  -- Add more country records as needed
+
+-- Insert records into the manager table
+INSERT INTO manager (id, managername)
+VALUES
+  (1, 'John Smith'),
+  (2, 'Jane Doe'),
+  (3, 'Michael Brown'),
+  (4, 'Emily Johnson');
+  -- Add more manager records as needed
+
+-- Insert records into the project table
+INSERT INTO project (id, projectname)
+VALUES
+  (1, 'Project A'),
+  (2, 'Project B'),
+  (3, 'Project C'),
+  (4, 'Project D');
+  -- Add more project records as needed
+
+-- Insert records into the employees table with foreign keys
+INSERT INTO employees (id, EmployeeName, DepartmentId, JobId, CountryId, ManagerId, ProjectId)
+VALUES
+  (1, 'Alice', 1, 2, 1, 1, 3),
+  (2, 'Bob', 3, 2, 2, 3, 1),
+  (3, 'Charlie', 2, 1, 4, 2, 2),
+  (4, 'David', 3, 2, 2, 3, 1),
+  (5, 'Emma', 1, 1, 4, 1, 4),
+  (6, 'George', 4, 3, 3, 2, 2),
+  (7, 'Isabella', 2, 4, 1, 4, 3),
+  (8, 'James', 3, 2, 2, 3, 1),
+  (9, 'Lily', 1, 1, 4, 1, 4),
+  (10, 'Noah', 4, 3, 3, 2, 2),
+  (11, 'Olivia', 2, 4, 1, 4, 3),
+  (12, 'William', 3, 2, 2, 3, 1),
+  (13, 'Sophia', 1, 1, 4, 1, 4),
+  (14, 'Benjamin', 4, 3, 3, 2, 2),
+  (15, 'Ava', 2, 4, 1, 4, 3),
+  (16, 'Alexander', 3, 2, 2, 3, 1),
+  (17, 'Charlotte', 1, 1, 4, 1, 4),
+  (18, 'Daniel', 4, 3, 3, 2, 2),
+  (19, 'Emily', 2, 4, 1, 4, 3),
+  (20, 'Ethan', 3, 2, 2, 3, 1),
+  (21, 'Grace', 1, 1, 4, 1, 4),
+  (22, 'Henry', 4, 3, 3, 2, 2),
+  (23, 'Hannah', 2, 4, 1, 4, 3);
+  -- Add more employee records as needed
+
+select * from Country
+select * from Department
+select * from Employees
+Select * from JobTitle
+select * from Manager
+select * from Project
+
+ALTER PROCEDURE [dbo].[GetEmployeeJoinResults]
+AS
+BEGIN
+    SELECT
+        e.employee_id,
+        e.employee_name,
+		e.country_id as CountryId, -- Alias the column to match the property name
+        d.department_name,
+        jt.job_title_name,
+        c.country_name,
+        m.manager_name,
+        p.project_name
+    FROM employees e
+    JOIN department d ON e.department_id = d.department_id
+    JOIN job_title jt ON e.job_id = jt.job_id
+    JOIN country c ON e.country_id = c.country_id
+    JOIN manager m ON e.manager_id = m.manager_id
+    JOIN project p ON e.project_id = p.project_id;
+END;
+GO
+
+CREATE TABLE BookAttribute (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL
+);
+
+
+CREATE TABLE Publisher (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL
+);
+
+
+CREATE TABLE BookDetail (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Author (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    GenreId INT,
+    FOREIGN KEY (GenreId) REFERENCES Genre(Id)
+);
+
+CREATE TABLE Genre (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    BookAttributeId INT,
+    FOREIGN KEY (BookAttributeId) REFERENCES BookAttribute(Id)
+);
+
+CREATE TABLE Book (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Title NVARCHAR(200) NOT NULL,
+    AuthorId INT,
+    PublisherId INT,
+    BookDetailId INT,
+    FOREIGN KEY (AuthorId) REFERENCES Author(Id),
+    FOREIGN KEY (PublisherId) REFERENCES Publisher(Id),
+    FOREIGN KEY (BookDetailId) REFERENCES BookDetail(Id)
+);
+
+
+-- Insert 30 records into BookAttribute table
+INSERT INTO BookAttribute (Name)
+VALUES
+    ('Mystery'),
+    ('Romance'),
+    ('Science Fiction'),
+    ('Fantasy'),
+    ('Thriller'),
+    ('Horror'),
+    ('Historical Fiction'),
+    ('Young Adult'),
+    ('Self-Help'),
+    ('Biography'),
+    ('Poetry'),
+    ('Adventure'),
+    ('Crime'),
+    ('Drama'),
+    ('Humor'),
+    ('Science'),
+    ('Travel'),
+    ('Cooking'),
+    ('Health'),
+    ('Art'),
+    ('Business'),
+    ('History'),
+    ('Religion'),
+    ('Sports'),
+    ('Politics'),
+    ('Music'),
+    ('Technology'),
+    ('Psychology'),
+    ('Education'),
+    ('Nature');
+
+-- Insert 30 records into Publisher table
+INSERT INTO Publisher (Name)
+VALUES
+    ('Publisher A'),
+    ('Publisher B'),
+    ('Publisher C'),
+    ('Publisher D'),
+    ('Publisher E'),
+    ('Publisher F'),
+    ('Publisher G'),
+    ('Publisher H'),
+    ('Publisher I'),
+    ('Publisher J'),
+    ('Publisher K'),
+    ('Publisher L'),
+    ('Publisher M'),
+    ('Publisher N'),
+    ('Publisher O'),
+    ('Publisher P'),
+    ('Publisher Q'),
+    ('Publisher R'),
+    ('Publisher S'),
+    ('Publisher T'),
+    ('Publisher U'),
+    ('Publisher V'),
+    ('Publisher W'),
+    ('Publisher X'),
+    ('Publisher Y'),
+    ('Publisher Z'),
+    ('Publisher AA'),
+    ('Publisher BB'),
+    ('Publisher CC');
+
+-- Insert 30 records into BookDetail table
+INSERT INTO BookDetail (Name)
+VALUES
+    ('Detail A'),
+    ('Detail B'),
+    ('Detail C'),
+    ('Detail D'),
+    ('Detail E'),
+    ('Detail F'),
+    ('Detail G'),
+    ('Detail H'),
+    ('Detail I'),
+    ('Detail J'),
+    ('Detail K'),
+    ('Detail L'),
+    ('Detail M'),
+    ('Detail N'),
+    ('Detail O'),
+    ('Detail P'),
+    ('Detail Q'),
+    ('Detail R'),
+    ('Detail S'),
+    ('Detail T'),
+    ('Detail U'),
+    ('Detail V'),
+    ('Detail W'),
+    ('Detail X'),
+    ('Detail Y'),
+    ('Detail Z'),
+    ('Detail AA'),
+    ('Detail BB'),
+    ('Detail CC');
+
+-- Insert 30 records into Genre table
+INSERT INTO Genre (Name, BookAttributeId)
+VALUES
+    ('Genre 1', 1),
+    ('Genre 2', 2),
+    ('Genre 3', 3),
+    ('Genre 4', 4),
+    ('Genre 5', 5),
+    ('Genre 6', 6),
+    ('Genre 7', 7),
+    ('Genre 8', 8),
+    ('Genre 9', 9),
+    ('Genre 10', 10),
+    ('Genre 11', 11),
+    ('Genre 12', 12),
+    ('Genre 13', 13),
+    ('Genre 14', 14),
+    ('Genre 15', 15),
+    ('Genre 16', 16),
+    ('Genre 17', 17),
+    ('Genre 18', 18),
+    ('Genre 19', 19),
+    ('Genre 20', 20),
+    ('Genre 21', 21),
+    ('Genre 22', 22),
+    ('Genre 23', 23),
+    ('Genre 24', 24),
+    ('Genre 25', 25),
+    ('Genre 26', 26),
+    ('Genre 27', 27),
+    ('Genre 28', 28),
+    ('Genre 29', 29),
+    ('Genre 30', 30);
+
+-- Insert 30 records into Author table
+INSERT INTO Author (Name, GenreId)
+VALUES
+    ('Author A', 1),
+    ('Author B', 2),
+    ('Author C', 3),
+    ('Author D', 4),
+    ('Author E', 5),
+    ('Author F', 6),
+    ('Author G', 7),
+    ('Author H', 8),
+    ('Author I', 9),
+    ('Author J', 10),
+    ('Author K', 11),
+    ('Author L', 12),
+    ('Author M', 13),
+    ('Author N', 14),
+    ('Author O', 15),
+    ('Author P', 16),
+    ('Author Q', 17),
+    ('Author R', 18),
+    ('Author S', 19),
+    ('Author T', 20),
+    ('Author U', 21),
+    ('Author V', 22),
+    ('Author W', 23),
+    ('Author X', 24),
+    ('Author Y', 25),
+    ('Author Z', 26),
+    ('Author AA', 27),
+    ('Author BB', 28),
+    ('Author CC', 29);
+
+
+-- Insert 30 records into the Book table
+INSERT INTO Book (Title, AuthorId, PublisherId, BookDetailId)
+VALUES
+    ('Book Title 1', 1, 1, 1),
+    ('Book Title 2', 2, 2, 2),
+    ('Book Title 3', 3, 3, 3),
+    ('Book Title 4', 4, 4, 4),
+    ('Book Title 5', 5, 5, 5),
+    ('Book Title 6', 6, 6, 6),
+    ('Book Title 7', 7, 7, 7),
+    ('Book Title 8', 8, 8, 8),
+    ('Book Title 9', 9, 9, 9),
+    ('Book Title 10', 10, 10, 10),
+    ('Book Title 11', 11, 11, 11),
+    ('Book Title 12', 12, 12, 12),
+    ('Book Title 13', 13, 13, 13),
+    ('Book Title 14', 14, 14, 14),
+    ('Book Title 15', 15, 15, 15),
+    ('Book Title 16', 16, 16, 16),
+    ('Book Title 17', 17, 17, 17),
+    ('Book Title 18', 18, 18, 18),
+    ('Book Title 19', 19, 19, 19),
+    ('Book Title 20', 20, 20, 20),
+    ('Book Title 21', 21, 21, 21),
+    ('Book Title 22', 22, 22, 22),
+    ('Book Title 23', 23, 23, 23),
+    ('Book Title 24', 24, 24, 24),
+    ('Book Title 25', 25, 25, 25),
+    ('Book Title 26', 26, 26, 26),
+    ('Book Title 27', 27, 27, 27);
+ 
+
+
+
+
+
+
+Scaffold-DbContext "Server=DESKTOP-ROD18FU;Database=DB_GenricRepositoryPattern;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir DB
